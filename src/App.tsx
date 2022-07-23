@@ -1,26 +1,18 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from 'react';
+import {Pages} from './pages';
+import {Resume} from './JsonResume';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export const App = () => {
+  const [resume, setResume] = useState<Resume | null>(null);
+  useEffect(() => {
+    fetch('https://gitconnected.com/v1/portfolio/ToyVo')
+      .then(res => res.json())
+      .then((resume: Resume) => setResume(resume));
+  }, []);
 
-export default App;
+  if (!resume) {
+    return <div/>;
+  }
+
+  return <Pages resume={resume}/>;
+};
