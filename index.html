@@ -1,13 +1,27 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" name="viewport">
+    <meta
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+        name="viewport">
     <title>Collin Diekvoss</title>
-    <link rel="stylesheet" href="/index-38a1d3d041e81731.css">
+    <link rel="stylesheet" href="/index-83816d0bf6b9e22f.css" integrity="sha384&#x2D;SP9WmKm&#x2B;bYlJQjUruO8mm3w6CCRmvJMY1XgrCQfJxYGr61UvlDl&#x2B;QchgGM7V9eU9"/>
 
-<link rel="preload" href="/portfolio-85e45934853612b1_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/portfolio-85e45934853612b1.js"></head>
+<link rel="modulepreload" href="/portfolio-3fed86b1581dc061.js" crossorigin=anonymous integrity="sha384-2IgiPhllUD9mtgc0FRwRLgIdVYpcf5MpdR2z9Pjt7eF2G6qQkUbbVcmppadUO7JC">
+<link rel="preload" href="/portfolio-3fed86b1581dc061_bg.wasm" crossorigin=anonymous integrity="sha384-OABD6vjJs2tEdaikonOED6zeNozaqP7jdpyAxrkxiJ05zjh/GQm9ky4nPG9W6Opk" as="fetch" type="application/wasm"></head>
 <body>
 
 
+<script type="module" nonce="xPmfoShxFw63gTZCgXHCDA==">
+import init, * as bindings from '/portfolio-3fed86b1581dc061.js';
+const wasm = await init('/portfolio-3fed86b1581dc061_bg.wasm');
 
-<script type="module">import init from '/portfolio-85e45934853612b1.js';init('/portfolio-85e45934853612b1_bg.wasm');</script></body></html>
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script></body>
+</html>
