@@ -20,7 +20,7 @@ enum Route {
     Education,
 }
 
-fn switch(routes: &Route) -> Html {
+fn switch(routes: Route) -> Html {
     match routes {
         Route::Me => html! { <Me/> },
         Route::Work => html! { <Work/> },
@@ -239,7 +239,8 @@ fn education() -> Html {
 fn app() -> Html {
     let (_state, dispatch) = use_store::<State>();
     {
-        use_effect_with_deps(
+        use_effect_with(
+            (),
             move |_| {
                 wasm_bindgen_futures::spawn_local(async move {
                     let fetched_resume: JsonResume =
@@ -256,7 +257,6 @@ fn app() -> Html {
                 });
                 || ()
             },
-            (),
         );
     }
     html! {
@@ -265,7 +265,7 @@ fn app() -> Html {
                 <Sidebar/>
                 <div class="p2 flex-grow-1">
                     <UserHeader/>
-                    <Switch<Route> render={Switch::render(switch)} />
+                    <Switch<Route> render={switch} />
                 </div>
             </div>
         </BrowserRouter>
@@ -273,5 +273,5 @@ fn app() -> Html {
 }
 
 fn main() {
-    yew::start_app::<App>();
+    yew::Renderer::<App>::new().render();
 }

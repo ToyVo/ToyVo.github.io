@@ -4,3 +4,5 @@ node_modules
 target
 build
 dist
+.direnv
+result
