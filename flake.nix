@@ -140,7 +140,7 @@
                         ln -s ${lib.getExe wasm-bindgen-cli} .share/dioxus/wasm-bindgen/wasm-bindgen-${wasm-bindgen-cli.version}
                       ''
                   }
-                  dx build --release --verbose --trace
+                  dx build --release --platform web --verbose --trace
                 '';
                 installPhase = ''
                   mkdir -p $out
@@ -150,23 +150,44 @@
                 cargoLock.lockFile = ./Cargo.lock;
               };
           };
-          devShells.default = pkgs.mkShell {
-            shellHook = ''
-              export RUST_LOG="portfolio=trace"
-              export RUST_SRC_PATH=${pkgs.rustPlatform.rustLibSrc}
-            '';
-            buildInputs = lib.optionals pkgs.stdenv.isDarwin [
-              pkgs.darwin.apple_sdk.frameworks.SystemConfiguration
+          devshells.default = {
+            imports = [
+              "${devshell}/extra/language/c.nix"
+              # "${devshell}/extra/language/rust.nix"
             ];
-            nativeBuildInputs = with pkgs; [
-              self'.packages.dioxus-cli
-              self'.packages.rustToolchain
-              pkg-config
-              rustPlatform.bindgenHook
-              libiconv
-              cargo-watch
-              systemfd
+
+            env = [
+              {
+                name = "RUST_LOG";
+                value = "portfolio=trace";
+              }
+              {
+                name = "RUST_SRC_PATH";
+                value = "${pkgs.rustPlatform.rustLibSrc}";
+              }
             ];
+
+            commands = [
+              {
+                package = self'.packages.dioxus-cli;
+              }
+            ];
+
+            packages =
+              with pkgs;
+              [
+                self'.packages.dioxus-cli
+                self'.packages.rustToolchain
+                pkg-config
+                rustPlatform.bindgenHook
+                cargo-watch
+                systemfd
+              ]
+              ++ lib.optionals stdenv.isDarwin [ darwin.apple_sdk.frameworks.SystemConfiguration ];
+
+            language.c = {
+              libraries = lib.optional pkgs.stdenv.isDarwin pkgs.libiconv;
+            };
           };
         };
     };
