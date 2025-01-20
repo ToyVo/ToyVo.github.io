@@ -146,6 +146,7 @@
                   mkdir -p $out
                   cp -r target/dx/$pname/release/web/public/* $out
                   cp $src/CNAME $out
+                  cp $out/index.html $out/404.html
                 '';
                 cargoLock.lockFile = ./Cargo.lock;
               };
