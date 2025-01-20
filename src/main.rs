@@ -41,7 +41,7 @@ fn App() -> Element {
             .unwrap()
     });
 
-    let state = use_context_provider(|| MyState { resume });
+    use_context_provider(|| MyState { resume });
 
     rsx! {
         // Global app resources

@@ -6,9 +6,6 @@ pub fn Me() -> Element {
     let resume = use_context::<MyState>().resume.cloned().unwrap_or_default();
     rsx! {
         div {
-            "Me"
-        }
-        div {
             h3 { class: "section-title", "About Me" }
             p { class: "pre-wrap", "{resume.basics.summary}" }
         }

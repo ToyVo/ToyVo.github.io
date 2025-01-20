@@ -10,7 +10,25 @@ pub fn Projects() -> Element {
             ul {
                 for project in resume.projects {
                     li { class: "project-item",
-                        h4 { class: "bold", "{project.name}" }
+                        h4 {
+                            class: "bold",
+                            "{project.display_name}"
+                            if !project.website.is_empty() {
+                                Link {
+                                    padding_left: "4px",
+                                    to: "{project.website}",
+                                    new_tab: true,
+                                    "{project.website}"
+                                }
+                            } else if !project.github_url.is_empty() {
+                                Link {
+                                    padding_left: "4px",
+                                    to: "{project.github_url}",
+                                    new_tab: true,
+                                    "{project.github_url}"
+                                }
+                            }
+                        }
                         p { "{project.description}" }
                         div { class: "chip-wrapper justify-content-start",
                             for item in project.languages {
