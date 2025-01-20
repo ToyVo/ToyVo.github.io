@@ -29,7 +29,13 @@ pub fn Projects() -> Element {
                                 }
                             }
                         }
-                        p { "{project.description}" }
+                        p {
+                            if project.description.is_empty() {
+                                "{project.summary}"
+                            } else {
+                                "{project.description}"
+                            }
+                        }
                         div { class: "chip-wrapper justify-content-start",
                             for item in project.languages {
                                 div {
