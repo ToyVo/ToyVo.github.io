@@ -76,27 +76,7 @@
                 targets = [ "wasm32-unknown-unknown" ];
               }
             );
-            wasm-bindgen-cli = pkgs.wasm-bindgen-cli.override {
-              version = "0.2.100";
-              hash = "sha256-3RJzK7mkYFrs7C/WkhW9Rr4LdP5ofb2FdYGz1P7Uxog=";
-              cargoHash = "sha256-tD0OY2PounRqsRiFh8Js5nyknQ809ZcHMvCOLrvYHRE=";
-            };
-            dioxus-cli = pkgs.dioxus-cli.overrideAttrs (drv: rec {
-              version = "0.6.1";
-              src = pkgs.fetchCrate {
-                inherit version;
-                pname = drv.pname;
-                hash = "sha256-mQnSduf8SHYyUs6gHfI+JAvpRxYQA1DiMlvNofImElU=";
-              };
-              cargoDeps = drv.cargoDeps.overrideAttrs (
-                lib.const {
-                  name = "${drv.cargoDeps.name}-vendor";
-                  inherit src;
-                  outputHash = "sha256-QiGnBoZV4GZb5MQ3K/PJxCfw0p/7qDmoE607hlGKOns=";
-                }
-              );
-              checkFlags = drv.checkFlags ++ [ "--skip=wasm_bindgen::test" ];
-            });
+            dioxus-cli = pkgs.callPackage ./dioxus-cli.nix {};
             default =
               let
                 cargoToml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
@@ -113,6 +93,8 @@
                   openssl
                   libiconv
                   pkg-config
+                  wasm-bindgen-cli
+                  binaryen
                   rustPlatform.bindgenHook
                 ];
                 buildInputs =
@@ -126,20 +108,6 @@
                     pkgs.darwin.apple_sdk.frameworks.SystemConfiguration
                   ];
                 buildPhase = ''
-                  ${
-                    if pkgs.stdenv.isDarwin then
-                      ''
-                        export HOME="$PWD/.home"
-                        mkdir -p ".home/Library/Application Support/dioxus/wasm-bindgen"
-                        ln -s ${lib.getExe wasm-bindgen-cli} ".home/Library/Application Support/dioxus/wasm-bindgen/wasm-bindgen-${wasm-bindgen-cli.version}"
-                      ''
-                    else
-                      ''
-                        export XDG_DATA_HOME="$PWD/.share"
-                        mkdir -p .share/dioxus/wasm-bindgen
-                        ln -s ${lib.getExe wasm-bindgen-cli} .share/dioxus/wasm-bindgen/wasm-bindgen-${wasm-bindgen-cli.version}
-                      ''
-                  }
                   dx build --release --platform web --verbose --trace
                 '';
                 installPhase = ''
