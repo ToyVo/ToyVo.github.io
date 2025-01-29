@@ -10,6 +10,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     rust-overlay.url = "github:oxalica/rust-overlay";
+    nixpkgs-dioxus.url = "github:CathalMullan/nixpkgs/dioxus-cli-v0.6.2";
   };
 
   nixConfig = {
@@ -61,6 +62,9 @@
             inherit system;
             overlays = [
               inputs.rust-overlay.overlays.default
+              (final: prev: {
+                dioxus-cli = inputs.nixpkgs-dioxus.legacyPackages.${prev.system}.dioxus-cli;
+              })
             ];
           };
           formatter = pkgs.nixfmt-rfc-style;
@@ -76,7 +80,6 @@
                 targets = [ "wasm32-unknown-unknown" ];
               }
             );
-            dioxus-cli = pkgs.callPackage ./dioxus-cli.nix {};
             default =
               let
                 cargoToml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
@@ -94,7 +97,6 @@
                   libiconv
                   pkg-config
                   wasm-bindgen-cli
-                  binaryen
                   rustPlatform.bindgenHook
                 ];
                 buildInputs =
@@ -138,14 +140,15 @@
 
             commands = [
               {
-                package = self'.packages.dioxus-cli;
+                package = pkgs.dioxus-cli;
               }
             ];
 
             packages =
               with pkgs;
               [
-                self'.packages.dioxus-cli
+                dioxus-cli
+                wasm-bindgen-cli
                 self'.packages.rustToolchain
                 pkg-config
                 rustPlatform.bindgenHook
